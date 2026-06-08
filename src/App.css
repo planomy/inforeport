@@ -1047,6 +1047,20 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--section-color) 12%, transparent);
 }
 
+.editor-section--long {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 14%, transparent);
+}
+
+.editor-section--long.active {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 18%, transparent);
+}
+
+.editor-section--ok {
+  border-color: color-mix(in srgb, var(--section-color) 35%, var(--border));
+}
+
 .editor-section label {
   display: flex;
   align-items: center;
@@ -1074,8 +1088,58 @@
   font-size: 0.7em;
 }
 
-.focus-btn {
+.section-word-range {
   margin-left: auto;
+  font-size: 0.68em;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.section-word-range--ok {
+  color: var(--success-text);
+  background: var(--success-bg);
+  border-color: color-mix(in srgb, var(--success-text) 20%, transparent);
+}
+
+.section-word-range--long {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+[data-theme='dark'] .section-word-range--long {
+  color: #fca5a5;
+  background: #3f1d1d;
+  border-color: #7f1d1d;
+}
+
+.section-word-range--short {
+  color: var(--text-muted);
+}
+
+.section-word-warning {
+  margin: 0;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.72em;
+  font-weight: 600;
+  color: #b91c1c;
+  background: #fef2f2;
+  border-bottom: 1px solid #fecaca;
+}
+
+[data-theme='dark'] .section-word-warning {
+  color: #fca5a5;
+  background: #3f1d1d;
+  border-bottom-color: #7f1d1d;
+}
+
+.focus-btn {
+  flex-shrink: 0;
   font-size: 0.68em;
   font-weight: 700;
   color: white;
@@ -1088,41 +1152,100 @@
   background: var(--purple-dark);
 }
 
-.heading-input,
-.editor-section textarea {
+/* Coloured sentence editor — mirror shows exemplar-matched highlight colours */
+.colored-editor {
+  position: relative;
   width: 100%;
-  border: none;
-  padding: 0.85rem;
-  resize: vertical;
-  line-height: 1.6;
-  color: var(--text);
   background: var(--input-bg);
-  min-height: 44px;
-  font-size: 1em;
 }
 
-.heading-input {
-  font-size: 1.4em;
-  font-weight: 800;
-  text-align: center;
-  color: var(--purple-deep);
-}
-
-.editor-section textarea {
-  min-height: 110px;
-}
-
-.heading-input:focus,
-.editor-section textarea:focus {
-  outline: none;
+.colored-editor:focus-within {
   background: var(--input-focus-bg);
 }
 
-.heading-input::placeholder,
-.editor-section textarea::placeholder {
+.colored-editor-mirror {
+  position: absolute;
+  inset: 0;
+  padding: 0.85rem;
+  line-height: 1.6;
+  font-size: 1em;
+  font-family: inherit;
+  font-weight: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  border: none;
+  box-sizing: border-box;
+}
+
+.colored-editor--title .colored-editor-mirror {
+  font-size: 1.4em;
+  font-weight: 800;
+  text-align: center;
+}
+
+.colored-editor-input {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 0.85rem;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.6;
+  min-height: calc(var(--editor-min-rows, 6) * 1.6em + 1.7rem);
+  font-size: 1em;
+  font-family: inherit;
+  font-weight: inherit;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: var(--text);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.colored-editor-input::placeholder {
+  color: transparent;
+  opacity: 0;
+}
+
+.colored-editor--title .colored-editor-input {
+  min-height: 44px;
+  font-size: 1.4em;
+  font-weight: 800;
+  text-align: center;
+  caret-color: var(--purple-deep);
+}
+
+.colored-editor-input:focus {
+  outline: none;
+}
+
+.colored-editor-input::selection {
+  color: transparent;
+  background: color-mix(in srgb, var(--purple) 28%, transparent);
+}
+
+.colored-editor-placeholder {
   color: var(--placeholder);
   font-weight: 400;
   font-size: 0.86em;
+}
+
+.colored-editor--title .colored-editor-placeholder {
+  display: block;
+  text-align: center;
+}
+
+/* Mirror-only highlights — no padding/borders so text aligns with the textarea */
+.editor-sentence-highlight {
+  background: color-mix(in srgb, var(--hl-color) 24%, var(--highlight-base));
+  color: color-mix(in srgb, var(--hl-color) 58%, var(--text));
+  font-weight: inherit;
+  border-radius: 2px;
 }
 
 /* Footer */

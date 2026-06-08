@@ -9,3 +9,16 @@ export function countTotalWords(sections: Record<string, string>): number {
 export function countSectionWords(text: string): number {
   return countWords(text)
 }
+
+export type WordRangeStatus = 'empty' | 'short' | 'ok' | 'long'
+
+export function getWordRangeStatus(
+  count: number,
+  min: number,
+  max: number
+): WordRangeStatus {
+  if (count === 0) return 'empty'
+  if (count > max) return 'long'
+  if (count < min) return 'short'
+  return 'ok'
+}

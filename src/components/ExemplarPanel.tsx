@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { SECTIONS, HIGHLIGHT_LABELS, type SectionId, type HighlightType } from '../data/sections'
 import { EXEMPLAR_TOPIC } from '../data/exemplarTopic'
 import { scrollToSection } from '../utils/scrollToSection'
+import { HIGHLIGHT_COLORS } from '../utils/highlightColors'
 
 interface ExemplarPanelProps {
   activeSection: SectionId
@@ -15,18 +16,6 @@ interface PopupState {
   color: string
   x: number
   y: number
-}
-
-const HIGHLIGHT_COLORS: Record<HighlightType, string> = {
-  title: '#7C3AED',
-  'topic-sentence': '#2563EB',
-  definition: '#2563EB',
-  technical: '#059669',
-  connective: '#D97706',
-  fact: '#0891B2',
-  comparison: '#9333EA',
-  example: '#0891B2',
-  summary: '#DB2777',
 }
 
 export function ExemplarPanel({ activeSection, onSectionSelect }: ExemplarPanelProps) {

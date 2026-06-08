@@ -43,6 +43,7 @@ export interface SectionData {
   }
   placeholder: string
   minWords: number
+  maxWords: number
 }
 
 export const HIGHLIGHT_LABELS: Record<HighlightType, string> = {
@@ -85,7 +86,7 @@ export const SECTIONS: SectionData[] = [
       ],
       writingTips: [
         'Keep it short — usually 2–5 words',
-        'Avoid questions in the heading',
+        'Avoid questions in the title',
         'Make sure it matches what you write about in every paragraph',
       ],
       sentenceStarters: [],
@@ -97,6 +98,7 @@ export const SECTIONS: SectionData[] = [
     },
     placeholder: 'e.g. Tidal Energy',
     minWords: 2,
+    maxWords: 6,
   },
   {
     id: 'introduction',
@@ -170,6 +172,7 @@ export const SECTIONS: SectionData[] = [
     placeholder:
       'Define your renewable resource. What is it? Where does it come from? Why is it important?',
     minWords: 40,
+    maxWords: 75,
   },
   {
     id: 'paragraph1',
@@ -252,6 +255,7 @@ export const SECTIONS: SectionData[] = [
     placeholder:
       'Explain how your renewable resource works. What happens first? What happens next? What is produced at the end?',
     minWords: 50,
+    maxWords: 90,
   },
   {
     id: 'paragraph2',
@@ -326,6 +330,7 @@ export const SECTIONS: SectionData[] = [
     placeholder:
       'What are the advantages of your renewable resource? Why is it a good way to produce energy?',
     minWords: 50,
+    maxWords: 90,
   },
   {
     id: 'paragraph3',
@@ -400,6 +405,7 @@ export const SECTIONS: SectionData[] = [
     placeholder:
       'Share interesting facts about your resource. How is it used in Australia? Where does it have potential?',
     minWords: 50,
+    maxWords: 90,
   },
   {
     id: 'conclusion',
@@ -465,6 +471,7 @@ export const SECTIONS: SectionData[] = [
     placeholder:
       'Summarise your report. What is the main idea? Why does this renewable resource matter for the future?',
     minWords: 30,
+    maxWords: 55,
   },
 ]
 

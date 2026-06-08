@@ -283,6 +283,7 @@ function App() {
             onSectionSelect={setActiveSection}
             onChange={handleChange}
             totalWords={totalWords}
+            sectionWordCounts={sectionWordCounts}
           />
         </main>
 
