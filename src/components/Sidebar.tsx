@@ -10,8 +10,6 @@ interface SidebarProps {
   onDownload: () => void
   onPrint: () => void
   onClear: () => void
-  copyStatus: 'idle' | 'copied' | 'error'
-  saveStatus: 'idle' | 'saved' | 'cancelled'
 }
 
 export function Sidebar({
@@ -24,8 +22,6 @@ export function Sidebar({
   onDownload,
   onPrint,
   onClear,
-  copyStatus,
-  saveStatus,
 }: SidebarProps) {
   return (
     <aside className="sidebar">
@@ -89,14 +85,10 @@ export function Sidebar({
       <div className="sidebar-actions">
         <p className="sidebar-label">Actions</p>
         <button className="sidebar-action primary" onClick={onSave}>
-          {saveStatus === 'saved'
-            ? '✓ Saved'
-            : saveStatus === 'cancelled'
-              ? 'Cancelled'
-              : 'Save'}
+          Save
         </button>
         <button className="sidebar-action" onClick={onCopy}>
-          {copyStatus === 'copied' ? '✓ Copied' : copyStatus === 'error' ? 'Failed' : 'Copy'}
+          Copy
         </button>
         <button className="sidebar-action" onClick={onDownload}>Download</button>
         <button className="sidebar-action" onClick={onPrint}>Print</button>

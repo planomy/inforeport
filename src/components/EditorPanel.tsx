@@ -8,7 +8,6 @@ interface EditorPanelProps {
   onSectionSelect: (id: SectionId) => void
   onChange: (id: SectionId, value: string) => void
   totalWords: number
-  lastSaved: Date | null
 }
 
 export function EditorPanel({
@@ -17,7 +16,6 @@ export function EditorPanel({
   onSectionSelect,
   onChange,
   totalWords,
-  lastSaved,
 }: EditorPanelProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -36,11 +34,6 @@ export function EditorPanel({
             <span className="word-count">
               <strong>{totalWords}</strong> words
             </span>
-            {lastSaved && (
-              <span className="save-indicator">
-                Saved {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            )}
           </span>
         </p>
       </header>

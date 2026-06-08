@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ExemplarPanel } from './components/ExemplarPanel'
 import { GuidancePanel } from './components/GuidancePanel'
 import { EditorPanel } from './components/EditorPanel'
@@ -6,6 +6,8 @@ import { FontSizeControl } from './components/FontSizeControl'
 import { Sidebar } from './components/Sidebar'
 import { ThemeToggle } from './components/ThemeToggle'
 import { WelcomeBanner } from './components/WelcomeBanner'
+import { SystemMessage } from './components/SystemMessage'
+import { useSystemMessage } from './hooks/useSystemMessage'
 import { getInitialTheme, saveTheme, type Theme } from './utils/theme'
 import {
   getFontScale,
@@ -13,9 +15,11 @@ import {
   saveFontSizeLevel,
   FONT_SIZE_LEVELS,
 } from './utils/fontSize'
+import { loadWordTarget, saveWordTarget } from './utils/wordTarget'
 import { SECTIONS, type SectionId } from './data/sections'
 import { countSectionWords, countTotalWords } from './utils/wordCount'
-import { saveReportToDevice } from './utils/saveReport'
+import { formatReportAsWordDoc } from './utils/formatWordDoc'
+import { getDefaultReportFilename, saveReportToDevice } from './utils/saveReport'
 import {
   clearDraft,
   formatReport,
@@ -41,10 +45,10 @@ const SECTION_LABELS = Object.fromEntries(
 function App() {
   const [content, setContent] = useState<DraftContent>(() => loadDraft() ?? EMPTY_CONTENT)
   const [activeSection, setActiveSection] = useState<SectionId>('introduction')
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'cancelled'>('idle')
+  const isFirstContentRender = useRef(true)
+  const { message, showMessage, showConfirm, dismiss } = useSystemMessage()
   const [fontSizeLevel, setFontSizeLevel] = useState(() => loadFontSizeLevel())
+  const [wordTarget, setWordTarget] = useState(() => loadWordTarget())
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme())
 
   const fontScale = getFontScale(fontSizeLevel)
@@ -70,6 +74,10 @@ function App() {
     saveFontSizeLevel(fontSizeLevel)
   }, [fontSizeLevel])
 
+  useEffect(() => {
+    saveWordTarget(wordTarget)
+  }, [wordTarget])
+
   const totalWords = useMemo(() => countTotalWords(content), [content])
 
   const sectionWordCounts = useMemo(
@@ -81,15 +89,12 @@ function App() {
   )
 
   const progress = useMemo(() => {
-    const checks = SECTIONS.filter((s) => s.id !== 'heading').map((s) =>
-      sectionWordCounts[s.id] >= s.minWords ? 1 : 0
-    )
-    return Math.round((checks.reduce<number>((a, b) => a + b, 0) / checks.length) * 100)
-  }, [sectionWordCounts])
+    if (wordTarget <= 0) return 0
+    return Math.min(100, Math.round((totalWords / wordTarget) * 100))
+  }, [totalWords, wordTarget])
 
   const handleChange = useCallback((id: SectionId, value: string) => {
     setContent((prev) => ({ ...prev, [id]: value }))
-    setSaveStatus('idle')
   }, [])
 
   const handleInsertStarter = useCallback(
@@ -99,54 +104,72 @@ function App() {
         const addition = current.trim() ? `\n${starter}` : starter
         return { ...prev, [activeSection]: current + addition }
       })
-      setSaveStatus('idle')
     },
     [activeSection]
   )
 
   useEffect(() => {
+    if (isFirstContentRender.current) {
+      isFirstContentRender.current = false
+      return
+    }
+
     const timer = setTimeout(() => {
       saveDraft(content)
-      setLastSaved(new Date())
     }, 1500)
+
     return () => clearTimeout(timer)
   }, [content])
 
+  useEffect(() => {
+    const saveOnExit = () => saveDraft(content)
+    window.addEventListener('beforeunload', saveOnExit)
+    return () => window.removeEventListener('beforeunload', saveOnExit)
+  }, [content])
+
   const handleSave = async () => {
-    const report = formatReport(content, SECTION_LABELS)
-    const title = content.heading.trim() || 'Information-Report'
-    const filename = `${title.replace(/\s+/g, '-')}.txt`
+    const report = formatReportAsWordDoc(content)
+    const filename = getDefaultReportFilename(content.heading)
 
     const result = await saveReportToDevice(filename, report)
 
     if (result === 'cancelled') {
-      setSaveStatus('cancelled')
-      setTimeout(() => setSaveStatus('idle'), 2000)
+      showMessage('Save cancelled', 'info')
       return
     }
 
     saveDraft(content)
-    setLastSaved(new Date())
-    setSaveStatus('saved')
-    setTimeout(() => setSaveStatus('idle'), 2000)
+    showMessage('Report saved', 'success', {
+      detail: 'Your Word document was saved to your device.',
+    })
   }
 
   const handleCopy = async () => {
     const report = formatReport(content, SECTION_LABELS)
     try {
       await navigator.clipboard.writeText(report)
-      setCopyStatus('copied')
-      setTimeout(() => setCopyStatus('idle'), 2000)
+      showMessage('Copied to clipboard', 'success', {
+        detail: 'You can paste your report into another app.',
+      })
     } catch {
-      setCopyStatus('error')
-      setTimeout(() => setCopyStatus('idle'), 2000)
+      showMessage('Could not copy', 'error', {
+        detail: 'Try selecting the text and copying manually.',
+      })
     }
   }
 
   const handleDownload = async () => {
-    const report = formatReport(content, SECTION_LABELS)
-    const title = content.heading.trim() || 'Information-Report'
-    await saveReportToDevice(`${title.replace(/\s+/g, '-')}.txt`, report)
+    const report = formatReportAsWordDoc(content)
+    const result = await saveReportToDevice(getDefaultReportFilename(content.heading), report)
+
+    if (result === 'cancelled') {
+      showMessage('Download cancelled', 'info')
+      return
+    }
+
+    showMessage('Report downloaded', 'success', {
+      detail: 'Your Word document was saved to your device.',
+    })
   }
 
   const handlePrint = () => {
@@ -181,15 +204,18 @@ function App() {
   }
 
   const handleClear = () => {
-    if (
-      window.confirm(
-        'Clear your whole report? This cannot be undone, but you can always start again.'
-      )
-    ) {
-      setContent(EMPTY_CONTENT)
-      clearDraft()
-      setLastSaved(null)
-    }
+    showConfirm('Clear your whole report?', {
+      detail: 'This cannot be undone, but you can always start again.',
+      confirmLabel: 'Clear report',
+      cancelLabel: 'Keep writing',
+      onConfirm: () => {
+        setContent(EMPTY_CONTENT)
+        clearDraft()
+        showMessage('Report cleared', 'info', {
+          detail: 'Start fresh whenever you are ready.',
+        })
+      },
+    })
   }
 
   return (
@@ -204,8 +230,6 @@ function App() {
         onDownload={handleDownload}
         onPrint={handlePrint}
         onClear={handleClear}
-        copyStatus={copyStatus}
-        saveStatus={saveStatus}
       />
 
       <div className="main-area">
@@ -236,6 +260,8 @@ function App() {
           totalWords={totalWords}
           progress={progress}
           topic={content.heading.trim()}
+          wordTarget={wordTarget}
+          onWordTargetChange={setWordTarget}
         />
 
         <main
@@ -257,17 +283,15 @@ function App() {
             onSectionSelect={setActiveSection}
             onChange={handleChange}
             totalWords={totalWords}
-            lastSaved={lastSaved}
           />
         </main>
 
         <footer className="app-footer">
-          <p>
-            Click coloured highlights in the exemplar · use sentence starters in the guide ·
-            your work saves automatically
-          </p>
+          <p>Created by Mr C 2026</p>
         </footer>
       </div>
+
+      {message && <SystemMessage message={message} onDismiss={dismiss} />}
     </div>
   )
 }

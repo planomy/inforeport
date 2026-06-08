@@ -60,8 +60,8 @@ export const HIGHLIGHT_LABELS: Record<HighlightType, string> = {
 export const SECTIONS: SectionData[] = [
   {
     id: 'heading',
-    label: 'Heading',
-    structureLabel: 'Heading',
+    label: 'Title',
+    structureLabel: 'Title',
     color: '#7C3AED',
     colorLight: '#EDE9FE',
     icon: '◆',
@@ -70,14 +70,14 @@ export const SECTIONS: SectionData[] = [
         text: 'Kryptonite',
         highlight: 'title',
         popup: {
-          title: 'Clear, Specific Heading',
-          body: 'Your heading tells the reader exactly what the report is about. Use the name of your renewable resource — no full sentences needed.',
+          title: 'Clear, Specific Title',
+          body: 'Your title tells the reader exactly what the report is about. Use the name of your renewable resource — no full sentences needed.',
         },
       },
     ],
     guidance: {
       purpose:
-        'The heading is the first thing your reader sees. It should name your renewable resource clearly and match the topic you will explain.',
+        'The title is the first thing your reader sees. It should name your renewable resource clearly and match the topic you will explain.',
       whatToInclude: [
         'The name of your renewable resource',
         'Correct capital letters for important words',
@@ -467,3 +467,5 @@ export const SECTIONS: SectionData[] = [
     minWords: 30,
   },
 ]
+
+export const TARGET_WORD_COUNT = SECTIONS.reduce((sum, s) => sum + s.minWords, 0)

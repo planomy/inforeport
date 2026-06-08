@@ -33,7 +33,7 @@ Or deploy the `dist` folder to any static host.
 
 | Section | Focus |
 |---------|-------|
-| Heading | Name of renewable resource |
+| Title | Name of renewable resource |
 | Introduction | What is it? |
 | Paragraph 1 | How it works |
 | Paragraph 2 | Advantages |
