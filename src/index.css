@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f0f0f8;
+  --surface: #ffffff;
+  --surface-soft: #f8f7fc;
+  --text: #1e1b2e;
+  --text-muted: #6b6880;
+  --border: #e8e6f0;
+  --purple: #6c5ce7;
+  --purple-dark: #5b4cdb;
+  --purple-deep: #4a3cc7;
+  --purple-light: #ede9fe;
+  --purple-glow: rgba(108, 92, 231, 0.15);
+  --gradient-sidebar: linear-gradient(180deg, #7c6df0 0%, #6c5ce7 45%, #5b4cdb 100%);
+  --gradient-banner: linear-gradient(135deg, #7c6df0 0%, #6c5ce7 50%, #8b7cf7 100%);
+  --shadow-sm: 0 2px 8px rgba(108, 92, 231, 0.06);
+  --shadow-md: 0 8px 24px rgba(108, 92, 231, 0.1);
+  --shadow-lg: 0 12px 40px rgba(108, 92, 231, 0.14);
+  --highlight-base: #ffffff;
+  --input-bg: #ffffff;
+  --input-focus-bg: #fefffe;
+  --placeholder: #a8a3b8;
+  --popup-backdrop: rgba(30, 27, 46, 0.12);
+  --success-bg: #d1fae5;
+  --success-text: #065f46;
+  --radius: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 99px;
+  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f0d18;
+  --surface: #1a1728;
+  --surface-soft: #221f32;
+  --text: #eeedf5;
+  --text-muted: #9b97b0;
+  --border: #322e48;
+  --purple: #9d8ff9;
+  --purple-dark: #8b7cf7;
+  --purple-deep: #b5a9ff;
+  --purple-light: #2e2848;
+  --purple-glow: rgba(157, 143, 249, 0.18);
+  --gradient-sidebar: linear-gradient(180deg, #3d3568 0%, #2a2448 50%, #1e1936 100%);
+  --gradient-banner: linear-gradient(135deg, #4a3f82 0%, #3a3268 50%, #5244a0 100%);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.28);
+  --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.38);
+  --shadow-lg: 0 12px 44px rgba(0, 0, 0, 0.48);
+  --highlight-base: #2a2640;
+  --input-bg: #1e1b2e;
+  --input-focus-bg: #262338;
+  --placeholder: #6e6a82;
+  --popup-backdrop: rgba(0, 0, 0, 0.5);
+  --success-bg: #123225;
+  --success-text: #6ee7b7;
+}
+
+html {
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow: hidden;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+mark {
+  background: none;
+}
+
+code {
+  font-family: inherit;
+  font-size: 0.92em;
+}
